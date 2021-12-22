@@ -1,12 +1,13 @@
 package text_based_rollgame;
 
-import java.nio.channels.InterruptedByTimeoutException;
+import text_based_rollgame.GUI.Dialogs.Aprove;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 import text_based_rollgame.Enemies.*;
+import text_based_rollgame.GUI.*;
+import text_based_rollgame.GUI.Dialogs.*;
 import text_based_rollgame.Player.Player;
-import text_based_rollgame.Scenes.*;
 
 public class TextBasedRollGame {
     public static void main(String[] args) {
@@ -32,10 +33,10 @@ public class TextBasedRollGame {
         // Inicio del Juego
         System.out.println("Bienvenido a la Mazmorra!");
         
-    
+        /*
         boolean sure = false;
         while(!sure){
-            System.out.println("¿Estás seguro de querer entrar? (si/no)");
+            System.out.println(" (si/no)");
         
             String input = sc.nextLine();
             switch(input.toLowerCase()){
@@ -47,7 +48,19 @@ public class TextBasedRollGame {
                     System.out.println("¡Perfecto!"); sure = true;
                     break;
             }
-        }    
+        } 
+        */   
+        
+        Game game = new Game();
+        boolean sure = false;
+        while(!sure){
+            Before dialogBf = new Before(game, true);
+            sure = dialogBf.getPressed();
+            delay(750);
+        }
+        new Aprove(game, true);
+        
+        /*
         GAME:
         while(running){
             System.out.println("----------------------------------------------------------------");
@@ -74,7 +87,7 @@ public class TextBasedRollGame {
             }
             running = false;
         }    
-            
+        */
     }
     
     private static void delay(long milis){
