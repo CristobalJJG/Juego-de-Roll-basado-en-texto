@@ -52,12 +52,14 @@ public class TextBasedRollGame {
         */   
         
         Game game = new Game();
-        boolean sure = false;
+        Before dialogBf = new Before(game, true, "¿Estás seguro de querer entrar en la Mazmorra?");
+        boolean sure = dialogBf.getPressed();
         while(!sure){
-            Before dialogBf = new Before(game, true);
+            dialogBf = new Before(game, true, "No es tan malo, créeme.\n¿Quieres entrar en la Mazmorra?");
             sure = dialogBf.getPressed();
             delay(750);
-        }
+        } 
+        dialogBf.dispose();
         new Aprove(game, true);
         
         /*

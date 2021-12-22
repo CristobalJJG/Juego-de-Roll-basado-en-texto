@@ -11,18 +11,19 @@ public class Before extends javax.swing.JDialog {
      * Creates new form Before
      * @param parent
      * @param modal
+     * @param message
      */
-    public Before(java.awt.Frame parent, boolean modal) {
+    public Before(java.awt.Frame parent, boolean modal, String message) {
         super(parent, modal);
         try{
             javax.swing.UIManager.setLookAndFeel(Themes.flatDark());
         }catch(ClassNotFoundException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException e){
             e.getMessage();
         }
-        this.pressed = pressed;
         setLocationRelativeTo(parent);
         initComponents();
         setResizable(false);
+        jLabel1.setText(message);
         setVisible(true);
     }
 
@@ -66,7 +67,7 @@ public class Before extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(67, 67, 67)
@@ -78,9 +79,9 @@ public class Before extends javax.swing.JDialog {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(45, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(42, 42, 42)
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
                     .addComponent(jButton3))
