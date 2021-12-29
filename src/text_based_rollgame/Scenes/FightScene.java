@@ -3,7 +3,9 @@ package text_based_rollgame.Scenes;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+import javax.swing.ImageIcon;
 import text_based_rollgame.Enemies.Enemy;
+import text_based_rollgame.GUI.Base_Game;
 import text_based_rollgame.Player.Player;
 
 public class FightScene extends Scene{
@@ -26,7 +28,8 @@ public class FightScene extends Scene{
     //Jugdor 
     private Player player;
     
-    public FightScene(Scanner sc, Player player, ArrayList<Enemy> enemies){
+    public FightScene(Scanner sc, Player player, ArrayList<Enemy> enemies, Base_Game game){
+        super(game);
         this.e = enemies.get(new Random().nextInt(enemies.size()));
         this.player = player;
         this.sc = sc;
@@ -34,35 +37,47 @@ public class FightScene extends Scene{
     
     @Override
     public boolean startScene(){
-        System.out.println("\t# " + e.getName() + " acaba de aparecer delante de ti! #\n");
         //  # Skeleton acaba de apareces delante de ti! #
         
         while(e.getHealth() > 0){
-            System.out.println("\tTu vida: " + player.getHealth());
-            System.out.println(e.enemyInfo());
-            System.out.println("\n\t¿Qué quieres hacer?");
-            System.out.println("\t1. Atacar");
-            System.out.println("\t2. Beber poción sanadora");
-            System.out.println("\t3. Ver tus estadísticas");
-            System.out.println("\t4. Huir!");
-             
-            String input = sc.nextLine();
+            getGame().setPlayerSprite(player.getSprite());
+            getGame().setEnemySprite(e.getSprite());
+            getGame().setLifeBar(player.getHealth(), player.getMaxHealth(), e.getHealth(), e.getMaxHealth());
+            String s = "\t# " + e.getName() + " acaba de aparecer delante de ti! #\n" +
+                        """
+                        \t\u00bfQu\u00e9 quieres hacer?
+                        \t\t1. Atacar
+                        \t\t2. Beber poci\u00f3n sanadora
+                        \t\t3. Ver tus estad\u00edsticas
+                        \t\t4. Huir!""";
+            System.out.println(s);
+            getGame().writeStory(s);
+            String input = "";
+            while(input.equals("")){
+                input = getGame().getInput();
+                delay(1000);
+            }
+            
             switch(input){
                 case "1":
-                    player.attackAction(e, chanceAttack1Hit); 
-                    e.attackPlayer(player, chanceEnemyHit); break;
+                    playerAttack();
+                    break;
                     
                 case "2":
                     player.heal();
-                    e.attackPlayer(player, chanceEnemyHit);
+                    enemyAttack();
+                    getGame().updatePlayerLifeBar(player.getHealth(), player.getMaxHealth());
                     break;
                        
                 case "3":
-                    System.out.println("|| -------- Jugador ------- || -------- Enemigo --------- ||");
-                    System.out.println("|| - Vida:" + player.getHealth()                 + "  \t\t    ||  Vida:" + e.getHealth() + "   \t\t- ||");
-                    System.out.println("|| - Daño de Ataque:" + player.getAttackDamage() + "\t    ||  Daño del enemigo:" + e.getAttackDamage() + "     - ||");
-                    System.out.println("|| - Pociones:" + player.getNumberOfPotions()    + "\t\t    ||\t\t\t\t- ||");
-                    System.out.println("|| -------- ------- ------- || -------- ------- --------- ||\n");
+                    String s1 = "|| -------- Jugador ------- || -------- Enemigo --------- ||" +
+                            "\n|| - Vida:" + player.getHealth()                 + "  \t\t    ||  Vida:" + e.getHealth() + "   \t\t- ||" +
+                            "\n|| - Daño de Ataque:" + player.getAttackDamage() + "\t    ||  Daño del enemigo:" + e.getAttackDamage() + "     - ||"+
+                            "\n|| - Pociones:" + player.getNumberOfPotions()    + "\t\t    ||\t\t\t\t- ||"+
+                            "\n|| -------- ------- ------- || -------- ------- --------- ||\n";
+                    System.out.println(s1);
+                    getGame().writeStory(s1);
+                    delay(5000);
                     break;
                     
                 case "4":
@@ -71,19 +86,63 @@ public class FightScene extends Scene{
                     }else{
                         System.out.println("No has podido huir! :(");
                     } 
-                    e.attackPlayer(player, chanceEnemyHit);
+                    enemyAttack();
                     break;
             
                 default:
+                    getGame().writeStory("No es una acción válida!");
                     System.out.println("Prueba otro número.");
             }
                 
             if(e.getHealth() <= 0){
+                enemyDies();
+                getGame().updateEnemyLifeBar(e.getHealth(), e.getMaxHealth());
                 return true;
             }else if(player.getHealth() <= 0){
                 return false;
             }
+            enemyAttack();
+            input = "0";
         }
         return true;
+    }
+    
+    private void enemyAttack(){
+        e.attackPlayer(player, chanceEnemyHit); 
+        updateSprite();
+        getGame().updateEnemyLifeBar(e.getHealth(), e.getMaxHealth());
+        delay(1000);
+        doCommonSprite();
+    }
+    
+    private void playerAttack(){
+        player.attackAction(e, chanceAttack1Hit); 
+        updateSprite();
+        getGame().updatePlayerLifeBar(player.getHealth(), player.getMaxHealth());
+        delay(1000);
+        doCommonSprite();
+    }
+    
+    private static void delay(long milis){
+        try{ Thread.sleep(milis); }
+        catch(InterruptedException e){
+            e.getMessage();
+        }
+    }
+    
+    private void doCommonSprite(){
+        player.changeSprite(13); e.changeSprite(13);
+        updateSprite();
+    }
+    
+    private void updateSprite(){
+        getGame().setPlayerSprite(player.getSprite());
+        getGame().setEnemySprite(e.getSprite());
+    }
+    
+    private void enemyDies(){
+        e.changeSprite(1);
+        player.changeSprite(3);
+        updateSprite();
     }
 }
