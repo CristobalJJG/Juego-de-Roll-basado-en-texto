@@ -1,13 +1,14 @@
 package text_based_rollgame;
 
-import text_based_rollgame.GUI.Dialogs.Aprove;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 import text_based_rollgame.Enemies.*;
 import text_based_rollgame.GUI.*;
-import text_based_rollgame.GUI.Dialogs.*;
+import text_based_rollgame.GUI.Dialogs.Aprove;
+import text_based_rollgame.GUI.Dialogs.Before;
 import text_based_rollgame.Player.Player;
+import text_based_rollgame.Scenes.*;
 
 public class TextBasedRollGame {
     public static void main(String[] args) {
@@ -17,10 +18,8 @@ public class TextBasedRollGame {
         
         // Variables de Enemigos
         ArrayList<Enemy> enemies = new ArrayList<>();
-        enemies.add(new EnemyZombie());
         enemies.add(new EnemySkeleton());
         enemies.add(new EnemyWarrior());
-        enemies.add(new EnemyAssasin());
         
         
         // Jugador
@@ -32,26 +31,10 @@ public class TextBasedRollGame {
         
         // Inicio del Juego
         System.out.println("Bienvenido a la Mazmorra!");
+   
         
-        /*
-        boolean sure = false;
-        while(!sure){
-            System.out.println(" (si/no)");
+        Base_Game game = new Base_Game();
         
-            String input = sc.nextLine();
-            switch(input.toLowerCase()){
-                case "no":
-                    System.out.println("No es tan malo, ¿créeme!");
-                    break;
-
-                case "si":
-                    System.out.println("¡Perfecto!"); sure = true;
-                    break;
-            }
-        } 
-        */   
-        
-        Game game = new Game();
         Before dialogBf = new Before(game, true, "¿Estás seguro de querer entrar en la Mazmorra?");
         boolean sure = dialogBf.getPressed();
         while(!sure){
@@ -62,20 +45,17 @@ public class TextBasedRollGame {
         dialogBf.dispose();
         new Aprove(game, true);
         
-        /*
-        GAME:
+        
         while(running){
             System.out.println("----------------------------------------------------------------");
+            
             // Carga de los escenarios
             ArrayList<Scene> escenarios = new ArrayList<>();
-            escenarios.add(new FightScene(sc, player, enemies));
-            player.showInfo();
-            escenarios.add(new FightScene(sc, player, enemies));
-            escenarios.add(new FightScene(sc, player, enemies));
-            escenarios.add(new FightScene(sc, player, enemies));
+            escenarios.add(new FightScene(sc, player, enemies, game));
+            
+            game.writeStory("Pelea!!");
             
             for (int i = 0; i < escenarios.size(); i++) {
-                delay(1500);
                 Scene escenario = escenarios.get(i);
                 if(escenario instanceof FightScene fs){
                     if(!fs.startScene()){
@@ -83,13 +63,12 @@ public class TextBasedRollGame {
                         running = false;
                         break;
                     }
+                    game.writeStory("\tHas Ganado!!!");
                     System.out.println("\tHas ganado!\n\n\n\n");
                 }
-                
             }
-            running = false;
         }    
-        */
+        
     }
     
     private static void delay(long milis){
